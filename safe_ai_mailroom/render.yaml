@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: safe-ai-mailroom
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:application --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    disk:
+      name: mailroom-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_PATH
+        value: /var/data/mailroom.sqlite3
+      - key: AI_BASE_URL
+        value: https://api.openai.com/v1
+      - key: AI_MODEL
+        value: gpt-4.1-mini
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_TIMEOUT_SECONDS
+        value: "35"
